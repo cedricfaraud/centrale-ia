@@ -6,17 +6,17 @@ load_dotenv()
 
 # --- Clients API gratuits ---
 groq = OpenAI(
-    api_key=os.getenv("GROQ_API_KEY"),
+    api_key=os.environ("GROQ_API_KEY"),
     base_url="https://api.groq.com/openai/v1",
 )
 
 deepseek = OpenAI(
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
-    base_url="https://api.deepseek.com",
+    api_key=os.environ("DEEPSEEK_API_KEY"),
+    base_url=""https://api.deepseek.com/v1",
 )
 
 gemini = OpenAI(
-    api_key=os.getenv("GOOGLE_API_KEY"),
+    api_key=os.environ("GOOGLE_API_KEY"),
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
 )
 
