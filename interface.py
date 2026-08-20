@@ -1,49 +1,18 @@
 import streamlit as st
-from agents import orchestrateur, architecte, dev, po, ivvq
+from agents import run_orchestrateur_multi_agents
 
 st.set_page_config(page_title="Centrale IA", layout="wide")
 
-st.title("🧠 Centrale IA — Chef de Projet")
+st.title("🧠 Centrale IA — Orchestrateur Multi‑Agents")
 
 description = st.text_area("Décris ton projet :", height=150)
 
-if st.button("Lancer le projet"):
+if st.button("Lancer orchestrateur multi-agents"):
     if not description.strip():
         st.error("Merci de décrire ton projet.")
     else:
-        with st.spinner("L'équipe IA travaille..."):
+        with st.spinner("Les agents travaillent..."):
+            result = run_orchestrateur_multi_agents(description)
 
-            synthese = orchestrateur(
-                f"Tu es chef de projet. Reformule clairement le besoin suivant : {description}"
-            )
-
-            backlog = po(
-                f"À partir de ce besoin reformulé, crée un backlog complet, structuré en user stories : {synthese}"
-            )
-
-            archi = architecte(
-                f"À partir de ce besoin reformulé, propose une architecture technique complète, modulaire : {synthese}"
-            )
-
-            code = dev(
-                f"Commence à implémenter le cœur du système en respectant l'architecture suivante : {archi}"
-            )
-
-            tests = ivvq(
-                f"Propose un plan de tests IVVQ détaillé pour valider ce système : {synthese}"
-            )
-
-        st.subheader("📌 Synthèse du chef de projet")
-        st.write(synthese)
-
-        st.subheader("📌 Backlog (PO)")
-        st.write(backlog)
-
-        st.subheader("📌 Architecture (Architecte)")
-        st.write(archi)
-
-        st.subheader("📌 Code (Développeur)")
-        st.code(code, language="python")
-
-        st.subheader("📌 Tests IVVQ")
-        st.write(tests)
+        st.subheader("📌 Résultat multi‑agents")
+        st.markdown(result)
