@@ -1,0 +1,12 @@
+# Ne jamais commit les clés
+.env
+
+# Ne jamais commit l'environnement virtuel
+venv/
+
+# Fichiers Streamlit
+.streamlit/
+
+# Cache Python
+__pycache__/
+*.pyc

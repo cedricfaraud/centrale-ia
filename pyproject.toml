@@ -1,0 +1,19 @@
+[project]
+name = "centrale-ia"
+version = "0.1.0"
+description = "Centrale IA orchestrée"
+requires-python = ">=3.10"
+
+dependencies = [
+    "langgraph",
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "python-dotenv",
+    "httpx",
+    "crewai"
+]
+
+[tool.uvicorn]
+host = "0.0.0.0"
+port = 8000
