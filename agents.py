@@ -1,4 +1,5 @@
 import os
+import json
 from openai import OpenAI
 
 # --- Clients API gratuits ---
@@ -89,6 +90,33 @@ Voici la demande :
     )
     return r.choices[0].message.content
 
+def agent_deploy(prompt: str) -> str:
+    r = groq.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[{
+            "role": "user",
+            "content": f"""
+Tu es un agent de déploiement.
+Tu génères des actions concrètes pour déployer automatiquement un projet sur :
+- Render
+- Vercel
+- HuggingFace Spaces
+
+Réponds uniquement en JSON structuré avec :
+- platform ("render" | "vercel" | "huggingface")
+- deploy_config (dict)
+- api_calls (liste des appels API à effectuer)
+
+Voici la demande :
+{prompt}
+"""
+        }],
+    )
+    return r.choices[0].message.content
+
+
+# --- Orchestrateur multi-agents complet ---
+from deploy_api import deploy_render, deploy_vercel, deploy_huggingface
 
 def run_orchestrateur_multi_agents(objectif: str) -> str:
     # 1. PO : cadrage du besoin
@@ -137,6 +165,37 @@ Génère un pipeline CI/CD complet, incluant :
 """
     devops_result = devops(devops_prompt)
 
+    # 6. Déploiement automatique
+    deploy_prompt = f"""Déploie automatiquement ce projet :
+Architecture :
+{archi_result}
+
+Plan d'implémentation :
+{dev_result}
+
+Pipeline DevOps :
+{devops_result}
+"""
+    deploy_plan_json = agent_deploy(deploy_prompt)
+
+    try:
+        deploy_plan = json.loads(deploy_plan_json)
+        platform = deploy_plan.get("platform")
+        deploy_config = deploy_plan.get("deploy_config", {})
+    except Exception as e:
+        deploy_result = f"Erreur parsing JSON déploiement : {e}"
+        platform = None
+
+    if platform == "render":
+        deploy_result = deploy_render(deploy_config)
+    elif platform == "vercel":
+        deploy_result = deploy_vercel(deploy_config)
+    elif platform == "huggingface":
+        deploy_result = deploy_huggingface(deploy_config)
+    else:
+        deploy_result = "Plateforme inconnue ou JSON invalide"
+
+    # Synthèse finale
     synthese = f"""
 # Synthèse orchestrateur multi-agents
 
@@ -154,6 +213,9 @@ Génère un pipeline CI/CD complet, incluant :
 
 ## 5. Pipeline DevOps
 {devops_result}
+
+## 6. Déploiement automatique
+{deploy_result}
 """
 
     return synthese
