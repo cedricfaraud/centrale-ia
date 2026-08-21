@@ -198,12 +198,12 @@ Réponds uniquement en JSON."""
 
     # Exécution réelle des actions GitHub
     try:
-        repo_url = create_repo(repo_name)
+        repo_url = github_create_repo(repo_name)
         for f in files:
-            add_files(repo_name, f["name"], f["content"])
+            github_add_file(repo_name, f["name"], f["content"])
         if workflow:
-            add_workflow(repo_name, workflow)
-        commit_and_push(repo_name, commit_message)
+            github_add_workflow(repo_name, workflow)
+        github_commit_and_push(repo_name, commit_message)
     except Exception as e:
         repo_url = f"Erreur lors de la création du dépôt GitHub : {e}"
 
