@@ -1,12 +1,8 @@
 import os
 import json
-from openai import OpenAI
+from groq import Groq
 
-# --- Clients API gratuits ---
-groq = OpenAI(
-    api_key=os.environ["GROQ_API_KEY"],
-    base_url="https://api.groq.com/openai/v1",
-)
+groq = Groq(api_key=os.environ["GROQ_API_KEY"])
 
 deepseek = OpenAI(
     api_key=os.environ["DEEPSEEK_API_KEY"],
