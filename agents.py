@@ -46,7 +46,7 @@ def dev(prompt: str) -> str:
 
 def po(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="llama-3.1-70b-versatile",
+        model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
@@ -133,7 +133,11 @@ def run_orchestrateur_multi_agents(objectif: str) -> str:
     po_prompt = f"""Objectif :
 {objectif}
 
-Donne une user story + critères d'acceptation."""
+Donne :
+- une user story
+- 3 critères d'acceptation
+Réponds en 10 lignes maximum."""
+
     po_result = po(po_prompt)
 
     # 2. Architecte : conception
