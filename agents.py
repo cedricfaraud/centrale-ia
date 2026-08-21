@@ -120,7 +120,13 @@ Voici la demande :
 
 # --- Orchestrateur multi-agents complet ---
 from deploy_api import deploy_render, deploy_vercel, deploy_huggingface
-from github_api import create_repo, add_files, add_workflow, commit_and_push
+from github_api import (
+    github_create_repo,
+    github_add_file,
+    github_add_workflow,
+    github_commit_and_push
+)
+
 
 def run_orchestrateur_multi_agents(objectif: str) -> str:
     # 1. PO : cadrage du besoin
