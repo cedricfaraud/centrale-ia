@@ -25,14 +25,14 @@ gemini = OpenAI(
 
 def orchestrateur(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="llama-3.1-8b-versatile",
+        model="llama-3.1-8b",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
 
 def architecte(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="llama-3.1-70b-versatile",
+        model="llama-3.1-8b",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
