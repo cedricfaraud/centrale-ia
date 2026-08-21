@@ -1,8 +1,4 @@
-langgraph
-fastapi
-uvicorn
-pydantic
+streamlit
+openai
+requests
 python-dotenv
-httpx
-crewai
-groq

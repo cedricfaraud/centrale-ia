@@ -18,7 +18,6 @@ def github_create_repo(repo_name: str):
     r.raise_for_status()
     return r.json()["html_url"]
 
-
 # 2️⃣ Ajouter un fichier
 def github_add_file(repo: str, path: str, content: str, message: str):
     url = f"https://api.github.com/repos/{GITHUB_USER}/{repo}/contents/{path}"
@@ -29,7 +28,6 @@ def github_add_file(repo: str, path: str, content: str, message: str):
     r = requests.put(url, json=payload, headers=BASE_HEADERS)
     r.raise_for_status()
     return r.json()
-
 
 # 3️⃣ Ajouter un workflow GitHub Actions
 def github_add_workflow(repo: str, workflow_yaml: str):
@@ -42,8 +40,6 @@ def github_add_workflow(repo: str, workflow_yaml: str):
     r.raise_for_status()
     return r.json()
 
-
 # 4️⃣ Commit final (techniquement inutile, GitHub API commit déjà)
 def github_commit_and_push(repo: str, message: str):
-    # On ne fait rien : GitHub API commit déjà dans add_file()
     return {"status": "ok", "message": message}
