@@ -21,7 +21,7 @@ gemini = OpenAI(
 
 def po(prompt: str) -> str:
     r = deepseek.chat.completions.create(
-        model="deepseek-reasoner",
+        model="deepseek-chat",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
@@ -29,7 +29,7 @@ def po(prompt: str) -> str:
 
 def dev(prompt: str) -> str:
     r = deepseek.chat.completions.create(
-        model="deepseek-reasoner",
+        model="deepseek-chat",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
@@ -45,7 +45,7 @@ def devops(prompt: str) -> str:
 
 def agent_github(prompt: str) -> str:
     r = deepseek.chat.completions.create(
-        model="deepseek-reasoner",
+        model="deepseek-chat",
         messages=[{
             "role": "user",
             "content": f"""
@@ -88,6 +88,9 @@ from github_api import (
     github_add_file,
     github_commit_and_push
 )
+
+# --- API Déploiement ---
+from deploy_api import deploy_render, deploy_vercel, deploy_huggingface
 
 # --- Orchestrateur multi-agents ---
 def run_orchestrateur_multi_agents(objectif: str) -> str:
@@ -138,7 +141,7 @@ Génère le dépôt complet."""
     try:
         repo_url = github_create_repo(repo_name)
         for f in files:
-            github_add_file(repo_name, f["name"], f["content"])
+            github_add_file(repo_name, f["name"], f["content"], commit_message)
         github_commit_and_push(repo_name, commit_message)
     except Exception as e:
         repo_url = f"Erreur GitHub : {e}"
