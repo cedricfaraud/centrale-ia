@@ -6,16 +6,13 @@ from openai import OpenAI
 
 # --- Clients API gratuits ---
 
-# Groq (Llama / Mixtral)
 groq = Groq(api_key=os.environ["GROQ_API_KEY"])
 
-# DeepSeek (via client OpenAI)
 deepseek = OpenAI(
     api_key=os.environ["DEEPSEEK_API_KEY"],
     base_url="https://api.deepseek.com/v1",
 )
 
-# Gemini (via client OpenAI)
 gemini = OpenAI(
     api_key=os.environ["GOOGLE_API_KEY"],
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
@@ -30,12 +27,15 @@ def orchestrateur(prompt: str) -> str:
     )
     return r.choices[0].message.content
 
-def architecte(prompt: str) -> str:
-    r = groq.chat.completions.create(
-        model="groq/compound",
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return r.choices[0].message.content
+# ---------------------------------------------------------
+# ARCHITECTE (désactivé)
+# ---------------------------------------------------------
+# def architecte(prompt: str) -> str:
+#     r = groq.chat.completions.create(
+#         model="groq/compound",
+#         messages=[{"role": "user", "content": prompt}],
+#     )
+#     return r.choices[0].message.content
 
 def dev(prompt: str) -> str:
     r = deepseek.chat.completions.create(
@@ -51,12 +51,15 @@ def po(prompt: str) -> str:
     )
     return r.choices[0].message.content
 
-def ivvq(prompt: str) -> str:
-    r = groq.chat.completions.create(
-        model="groq/compound",
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return r.choices[0].message.content
+# ---------------------------------------------------------
+# IVVQ (désactivé)
+# ---------------------------------------------------------
+# def ivvq(prompt: str) -> str:
+#     r = groq.chat.completions.create(
+#         model="groq/compound",
+#         messages=[{"role": "user", "content": prompt}],
+#     )
+#     return r.choices[0].message.content
 
 def devops(prompt: str) -> str:
     r = groq.chat.completions.create(
@@ -137,29 +140,32 @@ Donne :
 - une user story
 - 3 critères d'acceptation
 Réponds en 10 lignes maximum."""
-
     po_result = po(po_prompt)
 
-    # 2. Architecte : conception
-    archi_prompt = f"""Cadrage :
-{po_result}
-
-Donne une architecture technique concise."""
-    archi_result = architecte(archi_prompt)
+    # ---------------------------------------------------------
+    # 2. Architecte : désactivé
+    # ---------------------------------------------------------
+    # archi_prompt = f"""Cadrage :
+    # {po_result}
+    #
+    # Donne une architecture technique concise."""
+    # archi_result = architecte(archi_prompt)
 
     # 3. Dev : implémentation
-    dev_prompt = f"""Architecture :
-{archi_result}
+    dev_prompt = f"""User story :
+{po_result}
 
 Donne un plan d'implémentation concis."""
     dev_result = dev(dev_prompt)
 
-    # 4. IVVQ : validation
-    ivvq_prompt = f"""Plan :
-{dev_result}
-
-Donne une stratégie de tests concise."""
-    ivvq_result = ivvq(ivvq_prompt)
+    # ---------------------------------------------------------
+    # 4. IVVQ : désactivé
+    # ---------------------------------------------------------
+    # ivvq_prompt = f"""Plan :
+    # {dev_result}
+    #
+    # Donne une stratégie de tests concise."""
+    # ivvq_result = ivvq(ivvq_prompt)
 
     # 5. DevOps : pipeline CI/CD
     devops_prompt = f"""Plan :
@@ -173,11 +179,8 @@ Donne un pipeline CI/CD concis."""
 Objectif :
 {objectif}
 
-Cadrage :
+User story :
 {po_result}
-
-Architecture :
-{archi_result}
 
 Plan d'implémentation :
 {dev_result}
@@ -190,7 +193,6 @@ Génère un dépôt GitHub complet pour ce projet :
 - files (nom + contenu)
 - workflow (contenu YAML)
 - commit_message
-- api_calls (liste des appels API à effectuer)
 Réponds uniquement en JSON."""
     github_plan_json = agent_github(github_prompt)
 
@@ -220,9 +222,6 @@ Réponds uniquement en JSON."""
     # 7. Déploiement automatique
     deploy_prompt = f"""Déploie automatiquement ce projet :
 Repo GitHub : {repo_url}
-
-Architecture :
-{archi_result}
 
 Plan d'implémentation :
 {dev_result}
@@ -255,22 +254,16 @@ Pipeline DevOps :
 ## 1. Cadrage PO
 {po_result}
 
-## 2. Architecture
-{archi_result}
-
-## 3. Plan d'implémentation
+## 2. Plan d'implémentation (Dev)
 {dev_result}
 
-## 4. Stratégie IVVQ
-{ivvq_result}
-
-## 5. Pipeline DevOps
+## 3. Pipeline DevOps
 {devops_result}
 
-## 6. Dépôt GitHub
+## 4. Dépôt GitHub
 {repo_url}
 
-## 7. Déploiement automatique
+## 5. Déploiement automatique
 {deploy_result}
 """
 
