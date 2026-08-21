@@ -25,7 +25,7 @@ gemini = OpenAI(
 
 def orchestrateur(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="llama-3.1-8b-versatile",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
@@ -46,28 +46,28 @@ def dev(prompt: str) -> str:
 
 def po(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="llama-3.1-8b-versatile",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
 
 def ivvq(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="llama-3.1-8b-versatile",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
 
 def devops(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="llama-3.1-8b-versatile",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
 
 def agent_github(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="llama-3.1-8b-versatile",
         messages=[{
             "role": "user",
             "content": f"""
@@ -95,7 +95,7 @@ Voici la demande :
 
 def agent_deploy(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="llama-3.1-8b-versatile",
         messages=[{
             "role": "user",
             "content": f"""
