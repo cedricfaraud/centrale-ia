@@ -43,7 +43,7 @@ def dev(prompt: str) -> str:
 
 def po(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="mixtral-8x7b-instruct",
+        model="mixtral-8x7b",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
