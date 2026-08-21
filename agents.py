@@ -120,56 +120,97 @@ Voici la demande :
 
 # --- Orchestrateur multi-agents complet ---
 from deploy_api import deploy_render, deploy_vercel, deploy_huggingface
+from github_api import create_repo, add_files, add_workflow, commit_and_push
 
 def run_orchestrateur_multi_agents(objectif: str) -> str:
     # 1. PO : cadrage du besoin
-    po_prompt = f"""Tu es Product Owner.
-Objectif utilisateur :
+    po_prompt = f"""Objectif :
 {objectif}
 
-Clarifie le besoin, identifie les contraintes, et propose une user story + critères d'acceptation."""
+Donne une user story + critères d'acceptation."""
     po_result = po(po_prompt)
 
     # 2. Architecte : conception
-    archi_prompt = f"""Tu es Architecte logiciel.
-Voici le cadrage du PO :
+    archi_prompt = f"""Cadrage :
 {po_result}
 
-Propose une architecture technique (modules, flux, données, choix technos) adaptée."""
+Donne une architecture technique concise."""
     archi_result = architecte(archi_prompt)
 
     # 3. Dev : implémentation
-    dev_prompt = f"""Tu es Développeur senior.
-Voici l'architecture proposée :
+    dev_prompt = f"""Architecture :
 {archi_result}
 
-Propose un plan d'implémentation détaillé (étapes, pseudo-code, fichiers, fonctions)."""
+Donne un plan d'implémentation concis."""
     dev_result = dev(dev_prompt)
 
     # 4. IVVQ : validation
-    ivvq_prompt = f"""Tu es Ingénieur IVVQ.
-Voici le plan d'implémentation :
+    ivvq_prompt = f"""Plan :
 {dev_result}
 
-Propose une stratégie de tests (unitaires, intégration, validation), avec cas de test concrets."""
+Donne une stratégie de tests concise."""
     ivvq_result = ivvq(ivvq_prompt)
 
     # 5. DevOps : pipeline CI/CD
-    devops_prompt = f"""Tu es ingénieur DevOps senior.
-Voici le plan d'implémentation :
+    devops_prompt = f"""Plan :
 {dev_result}
 
-Génère un pipeline CI/CD complet, incluant :
-- un workflow GitHub Actions
-- un Dockerfile si nécessaire
-- un script de déploiement
-- un plan de monitoring
-- un plan de rollback
-"""
+Donne un pipeline CI/CD concis."""
     devops_result = devops(devops_prompt)
 
-    # 6. Déploiement automatique
+    # 6. GitHub : génération du dépôt + fichiers
+    github_prompt = f"""Projet :
+Objectif :
+{objectif}
+
+Cadrage :
+{po_result}
+
+Architecture :
+{archi_result}
+
+Plan d'implémentation :
+{dev_result}
+
+Pipeline CI/CD :
+{devops_result}
+
+Génère un dépôt GitHub complet pour ce projet :
+- repo_name
+- files (nom + contenu)
+- workflow (contenu YAML)
+- commit_message
+- api_calls (liste des appels API à effectuer)
+Réponds uniquement en JSON."""
+    github_plan_json = agent_github(github_prompt)
+
+    try:
+        github_plan = json.loads(github_plan_json)
+        repo_name = github_plan.get("repo_name", "projet-discussion-famille")
+        files = github_plan.get("files", [])
+        workflow = github_plan.get("workflow", "")
+        commit_message = github_plan.get("commit_message", "Initial commit")
+    except Exception as e:
+        repo_name = "projet-discussion-famille"
+        files = []
+        workflow = ""
+        commit_message = f"Erreur parsing JSON GitHub : {e}"
+
+    # Exécution réelle des actions GitHub
+    try:
+        repo_url = create_repo(repo_name)
+        for f in files:
+            add_files(repo_name, f["name"], f["content"])
+        if workflow:
+            add_workflow(repo_name, workflow)
+        commit_and_push(repo_name, commit_message)
+    except Exception as e:
+        repo_url = f"Erreur lors de la création du dépôt GitHub : {e}"
+
+    # 7. Déploiement automatique
     deploy_prompt = f"""Déploie automatiquement ce projet :
+Repo GitHub : {repo_url}
+
 Architecture :
 {archi_result}
 
@@ -216,7 +257,10 @@ Pipeline DevOps :
 ## 5. Pipeline DevOps
 {devops_result}
 
-## 6. Déploiement automatique
+## 6. Dépôt GitHub
+{repo_url}
+
+## 7. Déploiement automatique
 {deploy_result}
 """
 
