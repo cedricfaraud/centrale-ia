@@ -43,14 +43,14 @@ def dev(prompt: str) -> str:
 
 def po(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="mistral-7b-instruct",
+        model="mixtral-8x7b-instruct",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
 
 def ivvq(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="phi-3-mini-4k-instruct",
+        model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
