@@ -1,14 +1,21 @@
 import os
 import json
-from groq import Groq
 
+from groq import Groq
+from openai import OpenAI
+
+# --- Clients API gratuits ---
+
+# Groq (Llama / Mixtral)
 groq = Groq(api_key=os.environ["GROQ_API_KEY"])
 
+# DeepSeek (via client OpenAI)
 deepseek = OpenAI(
     api_key=os.environ["DEEPSEEK_API_KEY"],
     base_url="https://api.deepseek.com/v1",
 )
 
+# Gemini (via client OpenAI)
 gemini = OpenAI(
     api_key=os.environ["GOOGLE_API_KEY"],
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
@@ -39,7 +46,7 @@ def dev(prompt: str) -> str:
 
 def po(prompt: str) -> str:
     r = groq.chat.completions.create(
-        model="mixtral-8x7b",
+        model="llama-3.1-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
     )
     return r.choices[0].message.content
@@ -191,7 +198,6 @@ Pipeline DevOps :
     else:
         deploy_result = "Plateforme inconnue ou JSON invalide"
 
-    # Synthèse finale
     synthese = f"""
 # Synthèse orchestrateur multi-agents
 
